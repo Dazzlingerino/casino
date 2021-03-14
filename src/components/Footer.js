@@ -18,16 +18,15 @@ function Copyright() {
     );
 }
 
-
 export default function Footer() {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+        <div className={classes.footer}>
             <CssBaseline/>
             <footer className={classes.footer}>
                 <Container maxWidth="sm">
-                    <Typography variant="body1">My sticky footer can be found here.</Typography>
+                    <Typography variant="body1">Big wins here</Typography>
                     <Copyright/>
                 </Container>
             </footer>

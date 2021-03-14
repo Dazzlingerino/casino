@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Content from "./components/Content";
 import {makeStyles} from "@material-ui/core/styles";
-import NumberFormat from 'react-number-format'
+import useLocalStorage from "./components/LocalStorage";
+
 
 export const useStyles = makeStyles((theme) => ({
     '@global': {
@@ -14,14 +15,18 @@ export const useStyles = makeStyles((theme) => ({
             listStyle: 'none',
         },
     },
+    appWrapper: {},
+
     appBar: {
         borderBottom: `1px solid ${theme.palette.divider}`,
+
     },
     margin: {
         margin: theme.spacing(1),
     },
     toolbar: {
         flexWrap: 'wrap',
+        padding:10,
     },
     toolbarTitle: {
         flexGrow: 1,
@@ -63,6 +68,9 @@ export const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         minHeight: '10vh',
     },
+    content:{
+        height: '110vh'
+    },
     grid: {
         minHeight: '40vh',
     },
@@ -72,6 +80,7 @@ export const useStyles = makeStyles((theme) => ({
         minHeight: '100vh',
     },
     footer: {
+
         padding: theme.spacing(3, 2),
         marginTop: 'auto',
         backgroundColor:
@@ -80,24 +89,19 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 const App = () => {
-    let [balance, setBalance] = React.useState(99.99);
-
-    const [login, setLogin] = React.useState({
-        isLogin: false
-    });
-    const handleChangeAccBalance = () => {
-        setBalance(--balance);
-    };
+    const classes = useStyles();
+    let [balance, setBalance] = useLocalStorage('balance', 99.99);
+    const [login, setLogin] = React.useState(false);
 
     return (
-        <div className='app-wrapper'>
-            <div className='header'>
-                <Header balance={balance} login={login} handleChange={handleChangeAccBalance}/>
+        <div className={classes.appWrapper}>
+            <div className={classes.header}>
+                <Header balance={balance} login={login} setLogin={setLogin} />
             </div>
-            <div className='content'>
-                <Content balance={balance} setBalance={setBalance} handleChange={handleChangeAccBalance}/>
+            <div className={classes.content}>
+                <Content balance={balance} setBalance={setBalance} />
             </div>
-            <div className='footer'>
+            <div className={classes.footer}>
                 <Footer/>
             </div>
         </div>
