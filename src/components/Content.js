@@ -1,13 +1,12 @@
 import React, {useEffect} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import {DataGrid} from '@material-ui/data-grid'
 import Container from '@material-ui/core/Container';
 import {useStyles} from '../App';
 import StartButton from "./StartButton";
-import Popup, {results} from "./Popup";
-import Popover from "@material-ui/core/Popover";
-
-
+import Popup from "./Popup";
+import Popover from "@material-ui/core/Popover"
+import {XGrid, useGridApiRef} from '@material-ui/x-grid';
+import {interval} from 'rxjs';
 
 const columns = [
     {field: 'id', headerName: 'ID', width: 70},
@@ -25,8 +24,20 @@ const columns = [
 export default function Content({balance, setBalance}) {
     const classes = useStyles();
 
+    const apiRef = useGridApiRef();
+
+    useEffect(() => {
+        const subscription = interval(100).subscribe(() => {
+            apiRef.current.columnHeadersElementRef.current.nextSibling.offsetParent.firstElementChild.hidden = true
+            apiRef.current.updateRows(rows);
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [apiRef]);
+
     const [rows, setRows] = React.useState([])
-    const [row, setRow] = React.useState({id:null, firstSlot: 0, secondSlot: 0, thirdSlot: 0, time: 0})
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [value1, setValue1] = React.useState(0);
     const [value2, setValue2] = React.useState(0);
@@ -35,7 +46,7 @@ export default function Content({balance, setBalance}) {
 
     let tempDate = new Date();
     const currDate = tempDate.getHours() + ':' + tempDate.getMinutes() + ':' + tempDate.getSeconds();
-    let results = []
+
     const handlePlay = () => {
         let generatedValue1 = Math.floor(Math.random() * 10)
         let generatedValue2 = Math.floor(Math.random() * 10)
@@ -52,10 +63,15 @@ export default function Content({balance, setBalance}) {
         } else if ((generatedValue1 === generatedValue2) || (generatedValue2 === generatedValue3)) {
             setBalance(balance + 0.5)
         } else setBalance(--balance)
-        results.push('1')
-        rows.push({id:results.length, firstSlot: generatedValue1, secondSlot: generatedValue2, thirdSlot: generatedValue3, time: currDate})
-        console.log(rows[results.length])
-        setRow()
+
+        rows.push({
+            id: rows.length,
+            firstSlot: generatedValue1,
+            secondSlot: generatedValue2,
+            thirdSlot: generatedValue3,
+            time: currDate
+        })
+        setRows(rows)
     };
 
     const handleDebug = () => {
@@ -73,41 +89,42 @@ export default function Content({balance, setBalance}) {
 
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
-    debugger
-    return (
-                   <React.Fragment>
-                <CssBaseline/>
-                <Container maxWidth="sm" component="main" className={classes.heroContent}>
-                    Game results
-                    <div style={{height: 300, width: '100%'}}>
-                        <DataGrid rows={[row]} columns={columns} pageSize={4}/>
-                    </div>
-                </Container>
-                <Container maxWidth="lg" component="main">
-                    <div>
-                        <StartButton handleClick={handleClick}/>
-                        <Popover className={classes.popover}
-                                 id={id}
-                                 open={open}
-                                 anchorEl={anchorEl}
-                                 onCancel={handleClose}
-                                 aria-labelledby="simple-modal-title"
-                                 aria-describedby="simple-modal-description"
-                                 anchorOrigin={{
-                                     vertical: 'bottom',
-                                     horizontal: 'center',
-                                 }}
-                                 transformOrigin={{
-                                     vertical: 'top',
-                                     horizontal: 'center',
-                                 }}
-                        >
-                            <Popup value1={value1} value2={value2} value3={value3} setRows={setRows}  handlePlay={handlePlay}  handleClose={handleClose}
-                                   handleDebug={handleDebug}/>
-                        </Popover>
-                    </div>
-                </Container>
-            </React.Fragment>
 
-            );
-            }
+
+    return (
+        <React.Fragment>
+            <CssBaseline/>
+            <Container maxWidth="sm" component="main" className={classes.heroContent}>
+                Game results
+                <div style={{height: 300, width: '100%'}}>
+                    <XGrid rows={rows} columns={columns} apiRef={apiRef}/>
+                </div>
+            </Container>
+            <Container maxWidth="md" component="main">
+
+                <StartButton handleClick={handleClick}/>
+                <Popover className={classes.popover}
+                         id={id}
+                         open={open}
+                         anchorEl={anchorEl}
+                         onCancel={handleClose}
+                         aria-labelledby="simple-modal-title"
+                         aria-describedby="simple-modal-description"
+                         anchorOrigin={{
+                             vertical: 'bottom',
+                             horizontal: 'center',
+                         }}
+                         transformOrigin={{
+                             vertical: 'top',
+                             horizontal: 'center',
+                         }}
+                >
+                    <Popup value1={value1} value2={value2} value3={value3} setRows={setRows} handlePlay={handlePlay}
+                           handleClose={handleClose}
+                           handleDebug={handleDebug}/>
+                </Popover>
+            </Container>
+        </React.Fragment>
+
+    );
+}

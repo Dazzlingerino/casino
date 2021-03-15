@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './App.css';
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -15,18 +15,18 @@ export const useStyles = makeStyles((theme) => ({
             listStyle: 'none',
         },
     },
-    appWrapper: {},
-
     appBar: {
         borderBottom: `1px solid ${theme.palette.divider}`,
-
+    },
+    avatar: {
+        margin: 10
     },
     margin: {
         margin: theme.spacing(1),
     },
     toolbar: {
         flexWrap: 'wrap',
-        padding:10,
+        padding: 10,
     },
     toolbarTitle: {
         flexGrow: 1,
@@ -68,7 +68,7 @@ export const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         minHeight: '10vh',
     },
-    content:{
+    content: {
         height: '110vh'
     },
     grid: {
@@ -80,7 +80,6 @@ export const useStyles = makeStyles((theme) => ({
         minHeight: '100vh',
     },
     footer: {
-
         padding: theme.spacing(3, 2),
         marginTop: 'auto',
         backgroundColor:
@@ -90,16 +89,17 @@ export const useStyles = makeStyles((theme) => ({
 
 const App = () => {
     const classes = useStyles();
+
     let [balance, setBalance] = useLocalStorage('balance', 99.99);
-    const [login, setLogin] = React.useState(false);
+    let [login, setLogin] = useLocalStorage('isLogin',false);
 
     return (
-        <div className={classes.appWrapper}>
+        <div>
             <div className={classes.header}>
-                <Header balance={balance} login={login} setLogin={setLogin} />
+                <Header balance={balance} login={login} setLogin={setLogin}/>
             </div>
             <div className={classes.content}>
-                <Content balance={balance} setBalance={setBalance} />
+                <Content balance={balance} setBalance={setBalance}/>
             </div>
             <div className={classes.footer}>
                 <Footer/>

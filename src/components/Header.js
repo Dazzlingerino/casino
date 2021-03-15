@@ -26,7 +26,7 @@ export default function Header({balance, login, setLogin}) {
                     <NumberFormat value={balance} displayType={'text'} thousandSeparator={true} prefix={'$'}/>
                     {login
                         ? (<>
-                            <Avatar alt="User" src="/static/images/avatar/1.jpg"/>
+                            <Avatar className={classes.avatar} alt="User" src="/static/images/avatar/1.jpg"/>
                             <Logout setLogin={setLogin}/>
                         </>)
                         : <Login setLogin={setLogin}/>

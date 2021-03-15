@@ -11,6 +11,7 @@ import useLocalStorage from "./LocalStorage";
 
 export default function Login({setLogin}) {
     const classes = useStyles();
+
     const [open, setOpen] = React.useState(false);
     const [name, setName] = useLocalStorage('name', 'Username');
 

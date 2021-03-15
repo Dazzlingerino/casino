@@ -14,7 +14,6 @@ export default function Popup({value1,value2,value3,handlePlay,handleDebug,handl
         <React.Fragment>
             <Grid container direction="row" justify="center" alignItems="flex-end" spacing={3}
                   className={classes.grid}>
-
                 <Grid item xs={3} sm={4}>
                     <Card className={classes.card}>
                         {value1}
